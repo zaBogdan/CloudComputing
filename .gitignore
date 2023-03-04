@@ -1,0 +1,7 @@
+**.env
+**.ini
+**__pycache__
+**.vscode
+**env
+**.ini
+!**/config/example.ini
