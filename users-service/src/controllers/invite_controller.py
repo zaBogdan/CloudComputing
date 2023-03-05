@@ -4,9 +4,6 @@ from core.responses import SuccessResponse
 from service.invite_service import InviteService
 
 class InviteController:
-    def __init__(self):
-        pass
-
     @request
     def get_specific_invite(self, request):
         return SuccessResponse({
@@ -31,7 +28,6 @@ class InviteController:
     @request
     def put_update_invite(self, request):
         response = InviteService.update_invite(request.params.get('userId', None), request.params.get('inviteId', None), request.body)
-
         return SuccessResponse(response), 200
 
     @request

@@ -4,8 +4,8 @@ class ProfileModel(BaseModel):
     def __init__(self,
                 email: str = '',
                 username: str = '',
-                first_name: str = '',
-                last_name: str = '',
+                firstName: str = '',
+                lastName: str = '',
                 bio: str = '',
                 contact = [], 
                 _id=None):
@@ -13,7 +13,7 @@ class ProfileModel(BaseModel):
         self._id = _id
         self.email = email
         self.username = username
-        self.first_name = first_name
-        self.last_name = last_name
+        self.firstName = firstName
+        self.lastName = lastName
         self.bio = bio
         self.contact = contact

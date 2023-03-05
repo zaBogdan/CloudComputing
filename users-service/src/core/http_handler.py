@@ -97,8 +97,10 @@ class HttpHandler(SimpleHTTPRequestHandler):
             return obj.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         if isinstance(obj, ObjectId):
             return str(obj)
+        if hasattr(obj, 'to_json'):
+            return obj.to_json()
         
-        return json.JSONEncoder.default(obj)
+        return json.JSONEncoder.default(self, obj)
         
 
     def default_handler_404(self):
