@@ -4,7 +4,6 @@ from http.server import SimpleHTTPRequestHandler
 
 class HttpHandler(SimpleHTTPRequestHandler):
     def __init__(self, ctx, custom_routes, custom_middleware, *args, **kwargs):
-        print('Intiiating HttpHandler')
         self.routes = custom_routes
         self.middleware = custom_middleware
         self.ctx = ctx
@@ -60,7 +59,19 @@ class HttpHandler(SimpleHTTPRequestHandler):
                 query_param = query_param.split('=')
                 self.query_params[query_param[0]] = query_param[1]
 
+        if method in ['POST', 'PUT']:
+            self.body = self.__get_body()
+
         return found_route.get('handler')
+    
+    def __get_body(self):
+        content_length = int(self.headers['Content-Length'])
+        data = self.rfile.read(content_length).decode('utf-8')
+        
+        if self.headers['Content-Type'] == 'application/json':
+            return json.loads(data)
+        
+        return data
 
     def send_json(self, status_code: int, data: dict, headers: dict = {}):
         self.send_response(status_code)

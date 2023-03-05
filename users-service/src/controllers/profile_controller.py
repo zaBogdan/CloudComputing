@@ -7,11 +7,11 @@ class ProfileController:
         print(request.params)
         print(request.query_params)
         print(request.ctx)
+        print(request.headers)
+        print(request.body)
         return request.send_json(200, {
             'message': 'Hello world!'
         })
-        pass
-        # return self.profile_service.get_profile(user_id)
 
     def update_profile(self, user_id, profile):
         pass
