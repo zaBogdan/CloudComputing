@@ -37,20 +37,20 @@ class BaseApp:
     def close(self):
         self.server.close()
 
-    def post(self, path, handler):
-        self.__add_route('POST', path, handler)
+    def post(self, path, handler, *args):
+        self.__add_route('POST', path, handler, *args)
     
-    def get(self, path, handler):
-        self.__add_route('GET', path, handler)
+    def get(self, path, handler, *args):
+        self.__add_route('GET', path, handler, *args)
     
-    def put(self, path, handler):
-        self.__add_route('PUT', path, handler)
+    def put(self, path, handler, *args):
+        self.__add_route('PUT', path, handler, *args)
 
-    def patch(self, path, handler):
-        self.__add_route('PATCH', path, handler)
+    def patch(self, path, handler, *args):
+        self.__add_route('PATCH', path, handler, *args)
     
-    def delete(self, path, handler):
-        self.__add_route('DELETE', path, handler)
+    def delete(self, path, handler, *args):
+        self.__add_route('DELETE', path, handler, *args)
 
     def add_middleware(self, middleware):
         self.__middleware.append(middleware)
@@ -58,10 +58,10 @@ class BaseApp:
     def add_to_ctx(self, key, value):
         self.ctx[key] = value
 
-    def __add_route(self, method, path, handler):
-        self.routes[method].append(self.__get_transformed_route(path, handler))
+    def __add_route(self, method, path, handler, *args):
+        self.routes[method].append(self.__get_transformed_route(path, handler, *args))
     
-    def __get_transformed_route(self, path, handler):
+    def __get_transformed_route(self, path, handler, *args):
         params = []
         for component in path.split('/'):
             if not component.startswith(':'):
@@ -75,6 +75,7 @@ class BaseApp:
             'path': path,
             'handler': handler,
             'params': params,
+            'middleware': list(args)
         }
 
     def __http_handler_closure(self, *args, **kwargs):

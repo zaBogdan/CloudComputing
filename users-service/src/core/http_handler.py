@@ -74,6 +74,10 @@ class HttpHandler(SimpleHTTPRequestHandler):
         else:
             self.body = dict()
 
+        for middleware in found_route.get('middleware', []):
+            if middleware(self) is not True:
+                return lambda x: None
+
         return found_route.get('handler')
     
     def __get_body(self):

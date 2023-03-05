@@ -39,7 +39,7 @@ class InviteController:
         return SuccessResponse(response), 201
 
     @request
-    def patch_update_invite(self, request):
+    def put_update_invite(self, request):
         response = InviteService.update_invite(request.params.get('userId', None), request.params.get('inviteId', None), request.body)
         return SuccessResponse(response), 200
 
