@@ -17,7 +17,18 @@ class ProfileController:
         return request.send_json(200, {
             'message': 'Hello world!'
         })
-
-    def update_profile(self, user_id, profile):
-        pass
-        # return self.profile_service.update_profile(user_id, profile)
+    
+    def post_create_profile(self, request):
+        return request.send_json(200, {
+            'error': 'Not implemented'
+        })
+    
+    def put_update_profile(self, request):
+        return request.send_json(200, {
+            'error': 'Not implemented'
+        })
+    
+    def delete_profile(self, request):
+        return request.send_json(200, {
+            'error': 'Not implemented'
+        })

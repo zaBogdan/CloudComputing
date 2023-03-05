@@ -61,6 +61,8 @@ class HttpHandler(SimpleHTTPRequestHandler):
 
         if method in ['POST', 'PUT']:
             self.body = self.__get_body()
+        else:
+            self.body = dict()
 
         return found_route.get('handler')
     
