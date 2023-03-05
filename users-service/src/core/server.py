@@ -10,7 +10,7 @@ class Server:
         print('Starting server')
         with socketserver.TCPServer((self.host, self.port), handler) as httpd:
             self.httpd = httpd
-            self.httpd.daemon_threads = True
+            # self.httpd.daemon_threads = True
             print('Serving at port', self.port)
             try: 
                 self.httpd.serve_forever()
