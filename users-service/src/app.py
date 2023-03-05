@@ -22,14 +22,14 @@ signal.signal(signal.SIGTERM, signal_handler)
 # profile
 server.get('/user/:userId/profile', ProfileController().get_profile)
 server.post('/user/:userId/profile', ProfileController().post_create_profile)
-server.put('/user/:userId/profile', ProfileController().put_update_profile)
+server.patch('/user/:userId/profile', ProfileController().patch_update_profile)
 server.delete('/user/:userId/profile', ProfileController().delete_profile)
 
 # invite
 server.get('/user/:userId/invites/:inviteId', InviteController().get_specific_invite)
 server.get('/user/:userId/invites', InviteController().get_all_invites_for_user)
 server.post('/user/:userId/invites', InviteController().post_new_invite)
-server.put('/user/:userId/invites/:inviteId', InviteController().put_update_invite)
+server.patch('/user/:userId/invites/:inviteId', InviteController().patch_update_invite)
 server.delete('/user/:userId/invites/:inviteId', InviteController().delete_invite)
 
 # end of routes

@@ -37,6 +37,12 @@ class HttpHandler(SimpleHTTPRequestHandler):
         if not path_handler:
             return self.default_handler_404()
         return path_handler(self)
+    
+    def do_PATCH(self):
+        path_handler = self.__build_request('PATCH')
+        if not path_handler:
+            return self.default_handler_404()
+        return path_handler(self)
 
     def __build_request(self, method):
         found_route = None
@@ -63,7 +69,7 @@ class HttpHandler(SimpleHTTPRequestHandler):
                 query_param = query_param.split('=')
                 self.query_params[query_param[0]] = query_param[1]
 
-        if method in ['POST', 'PUT']:
+        if method in ['POST', 'PUT', 'PATCH']:
             self.body = self.__get_body()
         else:
             self.body = dict()

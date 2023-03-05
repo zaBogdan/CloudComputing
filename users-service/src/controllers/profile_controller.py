@@ -27,7 +27,7 @@ class ProfileController:
         return SuccessResponse(response), 201
     
     @request
-    def put_update_profile(self, request):
+    def patch_update_profile(self, request):
         response = ProfileService.update_profile(request.params.get('userId', None), request.body)
         return SuccessResponse(response), 200
     

@@ -42,6 +42,9 @@ class BaseApp:
     
     def put(self, path, handler):
         self.__add_route('PUT', path, handler)
+
+    def patch(self, path, handler):
+        self.__add_route('PATCH', path, handler)
     
     def delete(self, path, handler):
         self.__add_route('DELETE', path, handler)
