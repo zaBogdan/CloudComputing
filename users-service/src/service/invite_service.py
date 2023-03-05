@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from core.errors import ExceptionWithStatusCode
+from core import Logger
 from models import ProfileModel, InviteModel
 
 from utils.time import get_timedelta_from_string
@@ -33,6 +34,9 @@ class InviteService:
         if user_id is None:
             raise ExceptionWithStatusCode('User ID is required', 400)
         
+        if ProfileModel().find({ 'email': body.get('email', '') }) is not None:
+            raise ExceptionWithStatusCode('User can\'t be invited to our platform.', 400)
+
         if InviteModel().find({ 
             'email': body.get('email', ''),
             'active': True
@@ -122,7 +126,7 @@ class InviteService:
 
     @staticmethod
     def check_for_expired_codes() -> bool:
-        print(f'Checking for expired invite codes...')
+        Logger.get_logger().info(f'Checking for expired invite codes...')
         invites = InviteModel().find_many({ 'active': True })
 
         if invites is None:
@@ -133,6 +137,6 @@ class InviteService:
             if datetime.now() > invite.expire_date:
                 invite.active = False
                 invite.save()
-                print(f'Invite code {invite.invite_code} has been disabled.')
+                Logger.get_logger().info(f'Invite code {invite.invite_code} has been disabled.')
 
         return True

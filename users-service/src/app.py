@@ -1,6 +1,6 @@
 import sys
 import signal
-from core import BaseApp, Settings, MongoDb, Executor
+from core import BaseApp, Settings, MongoDb, Executor, Logger
 
 from controllers import ProfileController, InviteController
 from service import InviteService
@@ -12,7 +12,7 @@ auto_invalidate_codes = Executor('Auto Invalidate Invite Codes', int(settings.ge
 def signal_handler(sig, frame):
     auto_invalidate_codes.stop()
     auto_invalidate_codes.join()
-    print('Exiting now!')
+    Logger.get_logger().info('Successfully shutdown the application! Bye bye...')
     sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)

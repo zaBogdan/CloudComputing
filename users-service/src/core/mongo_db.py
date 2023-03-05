@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 
+from .logger import Logger
 from .settings import Settings
 
 class MongoDb:
@@ -11,7 +12,7 @@ class MongoDb:
 
         self.settings = Settings.get_instance()
         self.client = MongoClient(self.settings.get_value('Mongo', 'uri'))
-        print('MongoDB connected')
+        Logger.get_logger().info('Successfully started a connection with MongoDB')
         MongoDb.__DB = self.client[self.settings.get_value('Mongo', 'database_name')]
 
     @staticmethod

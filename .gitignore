@@ -5,3 +5,4 @@
 **env
 **.ini
 !**/config/example.ini
+**.log

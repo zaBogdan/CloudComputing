@@ -1,4 +1,5 @@
 from core.errors import ExceptionWithStatusCode
+from core import Logger
 from models import ProfileModel, InviteModel
 
 class ProfileService:
@@ -30,8 +31,6 @@ class ProfileService:
         
         new_profile = ProfileModel(**body)
         new_profile.save()
-
-        print(new_profile.to_json())
 
         return new_profile
     
@@ -73,7 +72,7 @@ class ProfileService:
         })
         for invite in list(invites):
             invite = InviteModel(**invite)
-            print(f'Deleting invite code with id \'{invite.invite_code}\' ')
+            Logger.get_logger().info(f'Deleting invite code with id \'{invite.invite_code}\' ')
             invite.delete()
         
         profile.delete()

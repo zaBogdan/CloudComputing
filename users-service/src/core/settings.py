@@ -1,5 +1,7 @@
 import configparser
 
+from .logger import Logger
+
 class Settings:
     __INSTANCE = None
 
@@ -7,6 +9,7 @@ class Settings:
         if Settings.__INSTANCE is not None:
             raise Exception('This class is a singleton!')
         
+        self.logger = Logger.get_logger()
         self.__configuration = {}
 
         self.config = self.__load_config(config_file)
@@ -27,7 +30,7 @@ class Settings:
         return self.__configuration[category][name]
 
     def __load_config(self, config_file: str):
-        print('Starting to load config file')
+        self.logger.debug('Starting to load config file')
         
         config = configparser.ConfigParser(converters={"any": lambda x: str(x)})
 

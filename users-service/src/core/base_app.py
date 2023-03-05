@@ -1,6 +1,7 @@
 import json
 from .server import Server
 from .http_handler import HttpHandler
+from .logger import Logger
 
 class BaseApp:
     def __init__(self, host, port):
@@ -10,12 +11,14 @@ class BaseApp:
             'GET': [],
             'POST': [],
             'PUT': [],
+            'PATCH': [],
             'DELETE': []
         }
         self.__middleware = []
         self.ctx = {
             'settings': None,
             'mongo': None,
+            'logger': Logger.get_logger()
         }
         self.server = None
 

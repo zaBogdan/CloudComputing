@@ -10,7 +10,7 @@ def request(func):
         except ExceptionWithStatusCode as e:
             return request.send_json(e.status_code, ErrorResponse(str(e)))
         except Exception as e:
-            print(e)
-            print(traceback.print_exc())
+            request.ctx['logger'].debug(e)
+            request.ctx['logger'].debug(traceback.print_exc())
             return request.send_json(500, ErrorResponse(str(e)))
     return wrapper
