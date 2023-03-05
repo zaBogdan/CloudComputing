@@ -4,6 +4,19 @@ from core.responses import SuccessResponse
 from service.invite_service import InviteService
 
 class InviteController:
+    """
+    InviteController controller.
+
+    This controller handles all requests to the /user/:userId/invites endpoint.
+
+    Attributes that can be found in request object:
+        params - The :userId parameter
+        query_params - The query parameters (if any)
+        ctx - The context object
+        headers - The HTTP headers from the request
+        body - The body of the request (if any)
+    """
+        
     @request
     def get_specific_invite(self, request):
         return SuccessResponse({

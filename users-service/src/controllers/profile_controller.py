@@ -6,20 +6,23 @@ from core.responses import SuccessResponse
 from service.profile_service import ProfileService
 
 class ProfileController:
+    """
+    Profile controller.
+
+    This controller handles all requests to the /user/:userId/profile endpoint.
+
+    Attributes that can be found in request object:
+        params - The :userId parameter
+        query_params - The query parameters (if any)
+        ctx - The context object
+        headers - The HTTP headers from the request
+        body - The body of the request (if any)
+    """
+    
     @request
     def get_profile(self, request):
         response = ProfileService.get_profile(request.params.get('userId', None))
         return SuccessResponse(response), 200
-    
-        # print(request.params)
-        # print(request.query_params)
-        # print(request.ctx)
-        # print(request.headers)
-        # print(request.body)
-        # m = ProfileModel('username', 'first_name', 'last_name', 'bio', 'contact')
-        # print(m.to_json())
-        # m.save()
-        # return SuccessResponse(None, 'Profile retrieved successfully'), 200
     
     @request
     def post_create_profile(self, request):
