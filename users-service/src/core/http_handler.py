@@ -1,5 +1,6 @@
 import re
 import json
+from .responses.default_response import DefaultResponse
 from http.server import SimpleHTTPRequestHandler
 
 class HttpHandler(SimpleHTTPRequestHandler):
@@ -81,7 +82,13 @@ class HttpHandler(SimpleHTTPRequestHandler):
         for name, value in headers.items():
             self.send_header(name, value)
         self.end_headers()
-        self.wfile.write(json.dumps(data).encode('utf-8'))
+        self.wfile.write(json.dumps(data, default=self.__default_json_dumps).encode('utf-8'))
+
+    def __default_json_dumps(self, obj):
+        if isinstance(obj, DefaultResponse):
+            return obj.__json__()
+        return json.JSONEncoder.default(obj)
+        
 
     def default_handler_404(self):
         self.send_response(404)

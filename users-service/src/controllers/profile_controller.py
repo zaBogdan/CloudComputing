@@ -1,4 +1,5 @@
 from models import ProfileModel
+from core.responses import SuccessResponse, ErrorResponse
 
 class ProfileController:
     def __init__(self):
@@ -24,11 +25,7 @@ class ProfileController:
         })
     
     def put_update_profile(self, request):
-        return request.send_json(200, {
-            'error': 'Not implemented'
-        })
+        return request.send_json(200, ErrorResponse('Not implemented yet'))
     
     def delete_profile(self, request):
-        return request.send_json(200, {
-            'error': 'Not implemented'
-        })
+        return request.send_json(200, ErrorResponse('Not implemented yet'))

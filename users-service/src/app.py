@@ -7,7 +7,7 @@ from service import InviteService
 
 settings = Settings.get_instance('dev')
 server = BaseApp('0.0.0.0', 1337)
-auto_invalidate_codes = Executor('Auto Invalide Codes', 10, InviteService.check_for_expired_codes)
+auto_invalidate_codes = Executor('Auto Invalide Codes', 3600, InviteService.check_for_expired_codes)
 
 def signal_handler(sig, frame):
     auto_invalidate_codes.stop()
