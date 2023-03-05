@@ -13,7 +13,6 @@ class BaseModel:
             if val.startswith('_'):
                 continue
             data_dict[val] = self.__dict__[val]
-        print(data_dict)
         return data_dict
     
     def set_database(self, collection_name: str):
@@ -25,7 +24,6 @@ class BaseModel:
         return self.update()
     
     def create(self):
-        print(self.__collection)
         return self.__collection.insert_one(self.to_json())
 
     def update(self):

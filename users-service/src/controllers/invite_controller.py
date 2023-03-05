@@ -1,6 +1,7 @@
 from core.decorators import request
 from core.errors import ExceptionWithStatusCode
 from core.responses import SuccessResponse
+from service.invite_service import InviteService
 
 class InviteController:
     def __init__(self):
@@ -18,9 +19,8 @@ class InviteController:
 
     @request
     def post_new_invite(self, request):
-        return SuccessResponse({
-            'error': 'Not implemented'
-        }), 200
+        response = InviteService.create_invite_code(request.params.get('userId', None), request.body)
+        return SuccessResponse(response), 201
 
     @request
     def put_update_invite(self, request):
