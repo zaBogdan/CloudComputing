@@ -33,4 +33,10 @@ class BaseModel:
         return self.__collection.delete_one({'_id': self._id})
     
     def find(self, query):
-        return self.__collection.find_one(query)
+        collection = self.__collection.find_one(query)
+        if collection is None:
+            return None
+        return self.__class__(**collection)
+    
+    def find_many(self, query, *args, **kwargs):
+        return self.__collection.find(query, *args, **kwargs)

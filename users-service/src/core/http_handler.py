@@ -1,5 +1,8 @@
 import re
 import json
+import datetime
+from bson.objectid import ObjectId
+
 from .responses.default_response import DefaultResponse
 from http.server import SimpleHTTPRequestHandler
 
@@ -78,6 +81,9 @@ class HttpHandler(SimpleHTTPRequestHandler):
 
     def send_json(self, status_code: int, data: dict, headers: dict = {}):
         self.send_response(status_code)
+        if data is None:
+            self.end_headers()
+            return
         self.send_header('Content-type', 'application/json')
         for name, value in headers.items():
             self.send_header(name, value)
@@ -87,6 +93,11 @@ class HttpHandler(SimpleHTTPRequestHandler):
     def __default_json_dumps(self, obj):
         if isinstance(obj, DefaultResponse):
             return obj.__json__()
+        if isinstance(obj, datetime.datetime):
+            return obj.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        
         return json.JSONEncoder.default(obj)
         
 

@@ -15,7 +15,13 @@ class InviteController:
 
     @request
     def get_all_invites_for_user(self, request):
-        raise ExceptionWithStatusCode('Not implemented yet', 409)
+        show_active = request.query_params.get('active', 'true').lower() == 'true'
+
+        response = InviteService.get_all_invites(
+            request.params.get('userId', None),
+            show_active
+        )
+        return SuccessResponse(response), 200
 
     @request
     def post_new_invite(self, request):
@@ -24,12 +30,11 @@ class InviteController:
 
     @request
     def put_update_invite(self, request):
-        return SuccessResponse({
-            'error': 'Not implemented'
-        }), 200
+        response = InviteService.update_invite(request.params.get('userId', None), request.params.get('inviteId', None), request.body)
+
+        return SuccessResponse(response), 200
 
     @request
     def delete_invite(self, request):
-        return SuccessResponse({
-            'error': 'Not implemented'
-        }), 200
+        InviteService.delete_invite(request.params.get('userId', None), request.params.get('inviteId', None))
+        return None, 204
