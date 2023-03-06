@@ -1,1 +1,2 @@
 from .validate_body import validate_body_middleware
+from .validate_auth import validate_auth_middleware

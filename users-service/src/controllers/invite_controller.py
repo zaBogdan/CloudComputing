@@ -21,7 +21,7 @@ class InviteController:
     def get_specific_invite(self, request):
         return SuccessResponse({
             'error': 'Not implemented'
-        }), 200
+        }), 501
 
     @request
     def get_all_invites_for_user(self, request):
