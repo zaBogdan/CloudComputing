@@ -10,6 +10,16 @@ from utils.crypto import generate_random_invite_code
 class InviteService:
     INVITE_CODE_LENGTH = 16
 
+    def get_invite_by_id(invite_id: str) -> dict:
+        if invite_id is None:
+            raise ExceptionWithStatusCode('Invite ID is required', 400)
+
+        invite = InviteModel().find({ 'invite_code': invite_id })
+        if invite is None:
+            raise ExceptionWithStatusCode('Invite does not exist', 404)
+
+        return invite
+
     @staticmethod
     def get_all_invites(user_id: str, active: bool = True) -> list:
         if user_id is None:

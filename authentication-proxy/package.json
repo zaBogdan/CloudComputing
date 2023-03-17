@@ -1,0 +1,25 @@
+{
+  "name": "authentication-proxy",
+  "version": "1.0.0",
+  "description": "The proxy that stays in front of all backend services",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon app.js",
+    "start:prod": "NODE_ENV=prod node app.js"
+  },
+  "keywords": [
+    "express",
+    "api",
+    "proxy",
+    "authentication",
+    "authorization"
+  ],
+  "author": "Bogdan Zavadovschi",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6",
+    "morgan": "^1.10.0"
+  }
+}

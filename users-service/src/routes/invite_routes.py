@@ -9,7 +9,7 @@ class InviteRoutes:
 
     def add_routes(self):
         self.server.get(
-            '/user/:userId/invites/:inviteId',
+            '/user/invites/:inviteId',
             InviteController().get_specific_invite,
             validate_auth_middleware
         )

@@ -19,9 +19,10 @@ class InviteController:
         
     @request
     def get_specific_invite(self, request):
-        return SuccessResponse({
-            'error': 'Not implemented'
-        }), 501
+        response = InviteService.get_invite_by_id(
+            request.params.get('inviteId', '')
+        )
+        return SuccessResponse(response), 200
 
     @request
     def get_all_invites_for_user(self, request):

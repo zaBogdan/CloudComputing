@@ -11,9 +11,15 @@ class MongoDb:
             raise Exception("This class is a singleton!")
 
         self.settings = Settings.get_instance()
-        self.client = MongoClient(self.settings.get_value('Mongo', 'uri'))
+        uri = "mongodb://{}:{}@{}:{}/".format(
+            self.settings.get_value('Mongo', 'username'),
+            self.settings.get_value('Mongo', 'password'),
+            self.settings.get_value('Mongo', 'host'),
+            self.settings.get_value('Mongo', 'port'),
+            )
+        self.client = MongoClient(uri)
         Logger.get_logger().info('Successfully started a connection with MongoDB')
-        MongoDb.__DB = self.client[self.settings.get_value('Mongo', 'database_name')]
+        MongoDb.__DB = self.client[self.settings.get_value('Mongo', 'collection')]
 
     @staticmethod
     def get_db():
