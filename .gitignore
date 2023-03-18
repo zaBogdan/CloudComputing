@@ -7,3 +7,4 @@
 !**/config/example.ini
 **.log
 **node_modules
+**dist

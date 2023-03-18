@@ -10,7 +10,7 @@ const PORT = 3000;
 const HOST = "localhost";
 const pathToService = {
     '/user': 'http://127.0.0.1:1337/',
-    '/jobs': 'http://127.0.0.1:1338/',
+    '/job': 'http://127.0.0.1:1338/',
     '/workers': 'http://127.0.0.1:1339/'
 }
 
@@ -22,6 +22,7 @@ Object.keys(pathToService).forEach((serviceName) => {
     app.use(serviceName, createProxyMiddleware({
         target: pathToService[serviceName],
         changeOrigin: true,
+        xfwd: true,
         onError: (err, req, res) => {
             return res.status(500).send({
                 success: false,
