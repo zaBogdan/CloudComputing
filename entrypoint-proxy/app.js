@@ -17,23 +17,8 @@ const pathToService = {
 // Logging
 app.use(morgan('dev'));
 
-// Info GET endpoint
-app.get('/info', (req, res, next) => {
-    res.send('This is a proxy service which proxies to Billing and Account APIs.');
- });
-
- // Authorization
-app.use((req, res, next) => {
-    console.log(req.headers)
-    if (req.headers.authorization) {
-        next();
-    } else {
-        res.sendStatus(403);
-    }
- });
-
- // Proxy endpoints
- Object.keys(pathToService).forEach((serviceName) => {
+// Proxy endpoints
+Object.keys(pathToService).forEach((serviceName) => {
     app.use(serviceName, createProxyMiddleware({
         target: pathToService[serviceName],
         changeOrigin: true,
@@ -44,7 +29,7 @@ app.use((req, res, next) => {
             })
         }
     }));
- })
+});
 
  // Start the Proxy
 app.listen(PORT, HOST, () => {
