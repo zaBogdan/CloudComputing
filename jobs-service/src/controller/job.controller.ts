@@ -74,6 +74,7 @@ export default async function serviceController(fastify: FastifyInstance) {
     }
   });
 
+  // PUT /jobs/:runnerId
   fastify.put('/:runnerId', {
     schema: {
       body: updateJobSchema,
@@ -93,6 +94,7 @@ export default async function serviceController(fastify: FastifyInstance) {
     }
   });
 
+  // DELETE /jobs/:runnerId
   fastify.delete('/:runnerId', async (_request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { runnerId } = (_request.params as { runnerId: string });

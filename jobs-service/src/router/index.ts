@@ -4,5 +4,5 @@ import templateController from "../controller/template.controller";
 
 export default async function router(fastify: FastifyInstance) {
     fastify.register(jobController, { prefix: "/jobs" });
-    fastify.register(templateController, { prefix: "/templates" });
+    fastify.register(templateController, { prefix: "jobs/templates" });
 }

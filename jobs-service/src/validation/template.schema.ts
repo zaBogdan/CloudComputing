@@ -1,6 +1,6 @@
 import { parametersSchema } from './parameters.schema';
 
-export const createJobSchema = {
+export const createTemplateSchema = {
   type: 'object',
   additionalProperties: false,
   properties: {
@@ -9,22 +9,12 @@ export const createJobSchema = {
       minLength: 3,
       maxLength: 80
     },
-    tags: {
-      type: 'array',
-      items: {
-        type: 'string',
-        minLength: 1,
-        maxLength: 80
-      },
-      minItems: 0,
-      maxItems: 10
-    },
     parameters: parametersSchema,
   },
   required: ['name', 'tags', 'parameters']
 }
 
-export const updateJobSchema = {
+export const updateTemplateSchema = {
   type: 'object',
   additionalProperties: false,
   properties: {
