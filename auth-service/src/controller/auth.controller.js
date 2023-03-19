@@ -1,6 +1,7 @@
 const passport = require('passport');
 const config = require('../module/config');
 const jwt = require('jsonwebtoken');
+const CustomStatusCodeError = require('../errors/CustomStatusCodeError');
 
 exports.registerController = (req, res, next) => {
     return res.json({
@@ -13,11 +14,11 @@ exports.registerController = (req, res, next) => {
 exports.loginController = async (req, res, next) => passport.authenticate('login', async (err, user, info) => {
   try {
     if (err || !user) {
-      throw new Error(info.message);
+      throw new CustomStatusCodeError(info.message, 401);
     }
 
     req.login(user, { session: false }, async (error) => {
-        if (error) return next(error);
+        if (error) return CustomStatusCodeError(error, 401);
         const body = { 
           _id: user._id,
           email: user.email,
@@ -30,7 +31,8 @@ exports.loginController = async (req, res, next) => passport.authenticate('login
       return res.json({ success: true,
         message: 'Logged in successfully',
         data: {
-            token
+            token,
+            user: body,
         }, 
       });
     });

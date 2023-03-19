@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/auth', routes);
 app.use((err, req, res, next) => {
-    const statusCode = err.status || 500;
+    const statusCode = err.statusCode || 500;
     res.status(statusCode);
     res.json({
         success: false,

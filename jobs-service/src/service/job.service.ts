@@ -27,7 +27,7 @@ class JobService {
 
   async findAll(filter: FilterType, skip: number = 0, limit: number = 10) {
     return await JobSchema.find(filter)
-      .select("-__v -metadata")
+      .select("-__v -metadata -parameters")
       .skip(skip)
       .limit(limit)
       .sort({ lastUpdate: -1 });

@@ -9,7 +9,7 @@ const cors = require('cors');
 const app = express();
 
 // Configuration
-const PORT = 3000;
+const PORT = 3001;
 const HOST = "127.0.0.1";
 const pathToService = {
     '/auth': 'http://127.0.0.1:1336',
@@ -49,6 +49,9 @@ Object.keys(pathToService).forEach((serviceName) => {
                     throw Error('You can\'t access this URL from outside the network.');
                 }
                 const validate = auth(req);
+                if (!validate) {
+                    throw Error('You are not authorized to access this resource.');
+                }
                 proxyReq.setHeader('X-User', validate.user.username);
                 proxyReq.setHeader('X-Email', validate.user.email);
                 proxyReq.setHeader('X-UserId', validate.user._id);

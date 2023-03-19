@@ -3,6 +3,7 @@ const localStrategy = require('passport-local').Strategy;
 const UserModel = require('../models/users.model');
 
 const { getRequest } = require('../module/requests');
+const CustomStatusCodeError = require('../errors/CustomStatusCodeError');
 
 passport.use('signup', new localStrategy({
     usernameField: 'username',
@@ -11,10 +12,16 @@ passport.use('signup', new localStrategy({
 }, async (req, username, password, done) => {
     try {
         const { email, inviteCode } = req.body;
-        const response = (await getRequest('user', `/user/invites/${inviteCode}`)).data.data;
+        let response = null;
+        try {
+            response = (await getRequest('user', `/user/invites/${inviteCode}`)).data.data;
+        } catch (error) {
+            console.log(error);
+            throw new CustomStatusCodeError(error?.response?.data?.message, error?.response?.status);
+        }
 
         if (response.email !== email || response.active === false || new Date(response.expire_date) < Date.now()) {
-            throw new Error('Invite code is not valid');
+            throw new CustomStatusCodeError('Invite code is not valid. It might be inactive, linked to another email or it just doesn\'t exist', 400);
         }
             
         const user = new UserModel({
