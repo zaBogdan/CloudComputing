@@ -115,6 +115,26 @@ class InviteService:
             'expireDate': str(invite.expire_date),
         }
     
+    @staticmethod
+    def disable_invite_code(invite_id: str) -> dict:
+        if invite_id is None:
+            raise ExceptionWithStatusCode('Invite ID is required', 400)
+        
+        invite = InviteModel().find({ 'invite_code': invite_id })
+
+        if invite is None:
+            raise ExceptionWithStatusCode('Invite does not exist', 404)
+        
+        invite.active = False
+        invite.save()
+
+        return {
+            'active': invite.active,
+            'email': invite.email,
+            'expireDate': str(invite.expire_date),
+        }
+    
+    @staticmethod
     def delete_invite(user_id: str, invite_id: str) -> dict:
         if user_id is None or invite_id is None:
             raise ExceptionWithStatusCode('User ID and Invite ID are required', 400)

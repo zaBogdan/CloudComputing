@@ -25,6 +25,13 @@ class InviteController:
         return SuccessResponse(response), 200
 
     @request
+    def get_disable_specific_invite(self, request):
+        response = InviteService.disable_invite_code(
+            request.params.get('inviteId', '')
+        )
+        return SuccessResponse(response), 200
+
+    @request
     def get_all_invites_for_user(self, request):
         show_active = request.query_params.get('active', 'true').lower() == 'true'
 
@@ -43,7 +50,7 @@ class InviteController:
     def put_update_invite(self, request):
         response = InviteService.update_invite(request.params.get('userId', None), request.params.get('inviteId', None), request.body)
         return SuccessResponse(response), 200
-
+    
     @request
     def delete_invite(self, request):
         InviteService.delete_invite(request.params.get('userId', None), request.params.get('inviteId', None))

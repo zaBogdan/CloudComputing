@@ -7,11 +7,12 @@ const app = express();
 
 // Configuration
 const PORT = 3000;
-const HOST = "localhost";
+const HOST = "127.0.0.1";
 const pathToService = {
+    '/auth': 'http://127.0.0.1:1336',
     '/user': 'http://127.0.0.1:1337/',
     '/jobs': 'http://127.0.0.1:1338/',
-    '/workers': 'http://127.0.0.1:1339/'
+    '/workers': 'http://127.0.0.1:1339/',
 }
 
 // Logging
@@ -23,8 +24,19 @@ Object.keys(pathToService).forEach((serviceName) => {
         target: pathToService[serviceName],
         changeOrigin: true,
         xfwd: true,
-        headers: {
-            'X-User': 'zabogdan'
+        onProxyReq: (proxyReq, req, res) => {
+            console.log('Headers:', req.headers.authorization);
+            if (!req.headers.authorization) {
+                return;
+            }
+
+            const [type, token] = req.headers.authorization.split(' ');
+
+            if (type !== 'Bearer') {
+                return;
+            }
+            
+            proxyReq.setHeader('X-User', 'zabogdan');
         },
         onError: (err, req, res) => {
             return res.status(500).send({
