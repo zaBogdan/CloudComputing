@@ -1,8 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { customAlphabet } from 'nanoid';
 import JobSchema from "../model/job.model";
+import CustomStatusCodeError from "../errors/CustomStatusCodeError";
 
 export interface FilterType {
+    name?: string;
     tags?: string | string[];
     runnerId?: string;
     triggeredBy?: string;
@@ -31,6 +33,7 @@ class JobService {
 
     async findBy(filter: FilterType) {
         return await JobSchema.find({
+            ...!!filter.name && { name: filter.name },
             ...!!filter.tags && { tags: { $in: filter.tags } },
             ...!!filter.runnerId && { runnerId: filter.runnerId },
             ...!!filter.triggeredBy && { triggeredBy: filter.triggeredBy },
@@ -39,7 +42,6 @@ class JobService {
     }
 
     async createJob(name: string, tags: string[], parameters: any, user: string) {
-        console.log('CreateJob', name, tags, parameters);
         const runnerId = this.nanoId();
         const metadata = {
           createdAt: new Date(),
@@ -58,14 +60,59 @@ class JobService {
         return job;
     }
 
-    async updateJob(name: string | null, tags: string[] | null, parameters: any | null, metadata: any | null) {
+    /**
+     * 
+     * @param runnerId the id of the job to update
+     * @param name string or null if you don't want to update
+     * @param tags a list of string or null if you don't want to update
+     * @param metadata (INTERNAL USE ONLY) updates the object with the given key-value pairs
+     * @param parameters (INTERNAL USE ONLY) updated the object with the given key-value pairs
+     * @returns the new object
+     */
+    async updateJob(runnerId: string, name?: string, tags?: string[], metadata?: any, parameters?: any) {
         console.log('UpdateJob', name, tags, parameters, metadata);
+        const filteredJobs = await this.findBy({ runnerId });
+        const job = filteredJobs.pop();
+        if (!job) {
+            throw new CustomStatusCodeError('Job not found', 404);
+        }
+
+        if (name) {
+            const jobsWithSameName = await this.findBy({ name: (name as string) });
+            console.log(name, jobsWithSameName)
+            if (jobsWithSameName.length > 0) {
+                throw new CustomStatusCodeError('Job with same name already exists', 409);
+            }
+            job.name = name;
+        }
+
+        if (tags) {
+            job.tags = tags;
+        }
+
+        if (metadata) {
+            job.metadata = metadata;
+        }
+
+        if (parameters) {
+            job.parameters = parameters;
+        }
+
+        job.lastUpdate = new Date();
+        await job.save();
+        
         return null;
     }
 
-    async deleteJob(id: string) {
-        console.log('DeleteJob', id);
-        return null;
+    async deleteJob(runnerId: string) {
+        const filteredJobs = await this.findBy({ runnerId });
+        const job = filteredJobs.pop();
+        if (!job) {
+            throw new CustomStatusCodeError('Job not found', 404);
+        }
+        
+        await JobSchema.deleteOne({ runnerId });
+        return true;
     }
 }
 

@@ -1,9 +1,9 @@
-import Boom from '@hapi/boom';
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 
-import { createJobSchema } from "../validation/job.schema";
-import type { CreateJobSchema } from "../validation/job.schema";
+import { createJobSchema, updateJobSchema } from "../validation/job.schema";
+import type { CreateJobSchema, UpdateJobSchema } from "../validation/job.schema";
 import JobService from '../service/job.service';
+import { handleResponseError, handleResponseSuccess } from '../helpers/handleRequestResponse';
 
 export default async function serviceController(fastify: FastifyInstance) {
   const jobService = new JobService(fastify);
@@ -20,18 +20,12 @@ export default async function serviceController(fastify: FastifyInstance) {
         triggeredBy: getCurrentUser(_request),
       }, queryParams.skip, queryParams.limit);
 
-      reply.code(200).send({
-        success: true,
-        message: 'Successfully fetched all jobs',
-        data: response,
-      });
+      reply.code(200).send(handleResponseSuccess(
+        'Successfully fetched all jobs',
+        response,
+      ));
     } catch (error) {
-      console.error(error);
-      const customError = Boom.boomify(error as Error);
-      reply.send({
-        success: false,
-        error: customError.output.payload,
-      })
+      handleResponseError(error as Error, reply);
     }
   });
 
@@ -52,18 +46,12 @@ export default async function serviceController(fastify: FastifyInstance) {
       }
       const response = await jobService.findBy(filter);
 
-      reply.code(200).send({
-        success: true,
-        message: 'Successfully fetched all jobs using filter',
-        data: response,
-      });
+      reply.code(200).send(handleResponseSuccess(
+        'Successfully fetched all jobs using filter',
+        response,
+      ));
     } catch (error) {
-      console.error(error);
-      const customError = Boom.boomify(error as Error);
-      reply.send({
-        success: false,
-        error: customError.output.payload,
-      })
+      handleResponseError(error as Error, reply);
     }
   });
 
@@ -74,24 +62,48 @@ export default async function serviceController(fastify: FastifyInstance) {
     }
   }, async (_request: FastifyRequest, reply: FastifyReply) => {
     try {
+      console.log('request', _request.body, createJobSchema)
       const { name, tags, parameters } = (_request.body as CreateJobSchema);
       const response = await jobService.createJob(name, tags, parameters, getCurrentUser(_request));
-      reply.code(201).send({
-        success: true,
-        message: 'Job created successfully',
-        data: response,
-      });
+      reply.code(201).send(handleResponseSuccess(
+        'Job created successfully',
+        response,
+      ));
     } catch (error) {
-      fastify.log.error(error);
-      const customError = Boom.boomify(error as Error);
-      console.log(customError)
-      reply.send({
-        success: false,
-        error: {
-          ...customError.output.payload,
-          ...{ message: (error as Error).message }
-        },
-      })
+      handleResponseError(error as Error, reply);
+    }
+  });
+
+  fastify.put('/:runnerId', {
+    schema: {
+      body: updateJobSchema,
+    }
+  }, async (_request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { runnerId } = (_request.params as { runnerId: string });
+      const { name, tags } = (_request.body as UpdateJobSchema);
+      
+      const response = await jobService.updateJob(runnerId, name, tags);
+      reply.code(201).send(handleResponseSuccess(
+        `Job with runnerId ${runnerId} has been updated successfully`,
+        response,
+      ));
+    } catch (error) {
+      handleResponseError(error as Error, reply);
+    }
+  });
+
+  fastify.delete('/:runnerId', async (_request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { runnerId } = (_request.params as { runnerId: string });
+      
+      await jobService.deleteJob(runnerId);
+      console.log('Hello world, DELETE JOB')
+      return reply.code(200).send(handleResponseSuccess(
+        `Job with runnerId ${runnerId} has been deleted successfully`,
+      ));
+    } catch (error) {
+      return handleResponseError(error as Error, reply);
     }
   });
 }
