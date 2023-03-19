@@ -1,5 +1,5 @@
 from controllers import InviteController
-from middleware import validate_body_middleware, validate_auth_middleware
+from middleware import validate_body_middleware
 from validators import create_invite_link, update_invite_link
 
 class InviteRoutes:
@@ -11,12 +11,10 @@ class InviteRoutes:
         self.server.get(
             '/user/invites/:inviteId',
             InviteController().get_specific_invite,
-            # validate_auth_middleware
         )
         self.server.get(
-            '/user/:userId/invites', 
+            '/user/invites', 
             InviteController().get_all_invites_for_user,
-            # validate_auth_middleware
         )
         self.server.get(
             '/user/invites/:inviteId/disable',
@@ -24,19 +22,16 @@ class InviteRoutes:
             # validate_auth_middleware_internal
         )
         self.server.post(
-            '/user/:userId/invites', 
+            '/user/invites', 
             InviteController().post_new_invite,
-            # validate_auth_middleware,
             validate_body_middleware(create_invite_link)
         )
         self.server.put(
             '/user/invites/:inviteId',
             InviteController().put_update_invite,
-            # validate_auth_middleware,
             validate_body_middleware(update_invite_link)
         )
         self.server.delete(
-            '/user/:userId/invites/:inviteId',
+            '/user/invites/:inviteId',
             InviteController().delete_invite,
-            # validate_auth_middleware
         )

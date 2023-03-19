@@ -23,6 +23,10 @@ const publicUrls = [
     '/auth/register',
 ]
 
+const internalOnlyUrls = [
+    new RegExp('/user/invites/([A-Za-z0-9]+)/disable'),
+]
+
 // Logging
 app.use(cors({
     origin: '*',
@@ -36,19 +40,35 @@ Object.keys(pathToService).forEach((serviceName) => {
         changeOrigin: true,
         xfwd: true,
         onProxyReq: (proxyReq, req, res) => {
-            if (publicUrls.includes(req.originalUrl)) {
-                console.log('Public URL', req.originalUrl)
-                return;
+            try {
+                if (publicUrls.includes(req.originalUrl)) {
+                    console.log('Public URL', req.originalUrl)
+                    return;
+                }
+                if (internalOnlyUrls.some((url) => url.test(req.originalUrl))) {
+                    throw Error('You can\'t access this URL from outside the network.');
+                }
+                const validate = auth(req);
+                proxyReq.setHeader('X-User', validate.user.username);
+                proxyReq.setHeader('X-Email', validate.user.email);
+                proxyReq.setHeader('X-UserId', validate.user._id);
+            } catch (err) {
+                return res.status(401).send({
+                    success: false,
+                    message: `You are not authorized to access this resource.`,
+                    error: {
+                        message: err.message,
+                    }
+                })
             }
-            const validate = auth(req);
-            proxyReq.setHeader('X-User', validate.user.username);
-            proxyReq.setHeader('X-Email', validate.user.email);
-            proxyReq.setHeader('X-UserId', validate.user._id);
         },
         onError: (err, req, res) => {
             return res.status(500).send({
                 success: false,
                 message: `Failed to process the request. Please contact the administrator, maybe the service is down.`,
+                error: {
+                    message: err.message,
+                }
             })
         }
     }));
