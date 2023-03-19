@@ -5,10 +5,6 @@ const jobMetadataSchema = new mongoose.Schema({
 		type: Date,
 		required: true
 	},
-	updatedAt: {
-		type: Date,
-		required: true
-	},
 	origin: {
 		type: Number,
 		enum: [0, 1, 2],
@@ -21,11 +17,15 @@ const jobMetadataSchema = new mongoose.Schema({
 const jobSchema = new mongoose.Schema({
 	name: {
 		type: String,
-		required: true
+		required: true,
+		index: true,
+		unique: true,
 	},
 	runnerId: {
 		type: String,
-		required: true
+		required: true,
+		index: true,
+		unique: true,
 	},
 	tags: [String],
 	metadata: {
@@ -34,11 +34,23 @@ const jobSchema = new mongoose.Schema({
 	},
 	triggeredBy: {
 		type: String,
-		required: true
+		required: true,
+		index: true,
 	},
 	parameters: {
 		type: Object,
 		required: true
+	},
+	lastUpdate: {
+		type: Date,
+		required: true
+	}
+}, {
+	toJSON: {
+		virtuals: true,
+		transform: (_doc, ret) => {
+			delete ret._id;
+		}
 	}
 });
 
