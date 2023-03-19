@@ -1,51 +1,51 @@
-import { parametersSchema } from './parameters.schema';
+import { parametersSchema } from "./parameters.schema";
 
 export const createJobSchema = {
-  type: 'object',
+  type: "object",
   additionalProperties: false,
   properties: {
     name: {
-      type: 'string',
+      type: "string",
       minLength: 3,
-      maxLength: 80
+      maxLength: 80,
     },
     tags: {
-      type: 'array',
+      type: "array",
       items: {
-        type: 'string',
+        type: "string",
         minLength: 1,
-        maxLength: 80
+        maxLength: 80,
       },
       minItems: 0,
-      maxItems: 10
+      maxItems: 10,
     },
     parameters: parametersSchema,
   },
-  required: ['name', 'tags', 'parameters']
-}
+  required: ["name", "tags", "parameters"],
+};
 
 export const updateJobSchema = {
-  type: 'object',
+  type: "object",
   additionalProperties: false,
   properties: {
     name: {
-      type: 'string',
+      type: "string",
       minLength: 3,
-      maxLength: 80
+      maxLength: 80,
     },
     tags: {
-      type: 'array',
+      type: "array",
       items: {
-        type: 'string',
+        type: "string",
         minLength: 1,
-        maxLength: 80
+        maxLength: 80,
       },
       minItems: 0,
-      maxItems: 10
+      maxItems: 10,
     },
   },
-  required: ['name', 'tags']
-}
+  required: ["name", "tags"],
+};
 
 export type CreateJobSchema = {
   name: string;
@@ -54,6 +54,6 @@ export type CreateJobSchema = {
 };
 
 export type UpdateJobSchema = {
-  name: string,
-  tags: string[]
-}
+  name: string;
+  tags: string[];
+};

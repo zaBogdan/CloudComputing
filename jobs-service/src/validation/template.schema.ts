@@ -1,90 +1,90 @@
-import { parametersSchema } from './parameters.schema';
+import { parametersSchema } from "./parameters.schema";
 
 export const createTemplateSchema = {
-  type: 'object',
+  type: "object",
   additionalProperties: false,
   properties: {
     name: {
-      type: 'string',
+      type: "string",
       minLength: 3,
-      maxLength: 80
+      maxLength: 80,
     },
     parameters: parametersSchema,
     tags: {
-      type: 'array',
+      type: "array",
       items: {
-        type: 'string',
+        type: "string",
         minLength: 1,
-        maxLength: 80
+        maxLength: 80,
       },
       minItems: 0,
-      maxItems: 10
+      maxItems: 10,
     },
     substitute: {
-      type: 'array',
+      type: "array",
       items: {
-        type: 'object',
+        type: "object",
         additionalProperties: false,
         properties: {
           variable: {
-            type: 'string',
+            type: "string",
             minLength: 1,
-            maxLength: 80
+            maxLength: 80,
           },
           value: {
-            type: 'string',
+            type: "string",
             minLength: 1,
-            maxLength: 80
+            maxLength: 80,
           },
-        }
+        },
       },
-    }
+    },
   },
-  required: ['name', 'tags', 'parameters', 'substitute']
-}
+  required: ["name", "tags", "parameters", "substitute"],
+};
 
 export const updateTemplateSchema = {
-  type: 'object',
+  type: "object",
   additionalProperties: false,
   properties: {
     name: {
-      type: 'string',
+      type: "string",
       minLength: 3,
-      maxLength: 80
+      maxLength: 80,
     },
     parameters: parametersSchema,
     tags: {
-      type: 'array',
+      type: "array",
       items: {
-        type: 'string',
+        type: "string",
         minLength: 1,
-        maxLength: 80
+        maxLength: 80,
       },
       minItems: 0,
-      maxItems: 10
+      maxItems: 10,
     },
     substitute: {
-      type: 'array',
+      type: "array",
       items: {
-        type: 'object',
+        type: "object",
         additionalProperties: false,
         properties: {
           variable: {
-            type: 'string',
+            type: "string",
             minLength: 1,
-            maxLength: 80
+            maxLength: 80,
           },
           value: {
-            type: 'string',
+            type: "string",
             minLength: 1,
-            maxLength: 80
+            maxLength: 80,
           },
-        }
+        },
       },
-    }
+    },
   },
-  minItems: 1
-}
+  minItems: 1,
+};
 
 export type CreateTemplateSchema = {
   name: string;
@@ -98,4 +98,4 @@ export type UpdateTemplateSchema = {
   tags: string[];
   parameters: Record<string, unknown>;
   substitute: Record<string, unknown>[];
-}
+};
