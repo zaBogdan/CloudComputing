@@ -18,7 +18,7 @@ passport.use('signup', new localStrategy({
         }
             
         const user = new UserModel({
-            username,
+            username: username.toLowerCase(),
             password,
             email,
         });
@@ -35,7 +35,7 @@ passport.use('login', new localStrategy({
     passwordField: 'password'
 }, async (username, password, done) => {
     try {
-        const user = await UserModel.findOne({ username });
+        const user = await UserModel.findOne({ username: username.toLowerCase() });
         if (!user) {
             return done(null, false, { message: 'User not found' })
         }

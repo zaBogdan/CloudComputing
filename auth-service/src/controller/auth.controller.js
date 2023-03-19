@@ -18,10 +18,15 @@ exports.loginController = async (req, res, next) => passport.authenticate('login
 
     req.login(user, { session: false }, async (error) => {
         if (error) return next(error);
-
-        const body = { _id: user._id, email: user.email };
-        const token = jwt.sign({ user: body }, config.jwtSecret);
-
+        const body = { 
+          _id: user._id,
+          email: user.email,
+          username: user.username,
+        };
+        const token = jwt.sign({ user: body }, config.jwtSecret, {
+          expiresIn: '1h',
+        });
+      
       return res.json({ success: true,
         message: 'Logged in successfully',
         data: {

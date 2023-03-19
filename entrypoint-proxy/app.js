@@ -1,6 +1,9 @@
 const express = require('express');
 const morgan = require("morgan");
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const config = require('./module/config');
+const auth = require('./auth/jwt');
+const cors = require('cors');
 
 // Create Express Server
 const app = express();
@@ -15,7 +18,15 @@ const pathToService = {
     '/workers': 'http://127.0.0.1:1339/',
 }
 
+const publicUrls = [
+    '/auth/login',
+    '/auth/register',
+]
+
 // Logging
+app.use(cors({
+    origin: '*',
+}))
 app.use(morgan('dev'));
 
 // Proxy endpoints
@@ -25,18 +36,14 @@ Object.keys(pathToService).forEach((serviceName) => {
         changeOrigin: true,
         xfwd: true,
         onProxyReq: (proxyReq, req, res) => {
-            console.log('Headers:', req.headers.authorization);
-            if (!req.headers.authorization) {
+            if (publicUrls.includes(req.originalUrl)) {
+                console.log('Public URL', req.originalUrl)
                 return;
             }
-
-            const [type, token] = req.headers.authorization.split(' ');
-
-            if (type !== 'Bearer') {
-                return;
-            }
-            
-            proxyReq.setHeader('X-User', 'zabogdan');
+            const validate = auth(req);
+            proxyReq.setHeader('X-User', validate.user.username);
+            proxyReq.setHeader('X-Email', validate.user.email);
+            proxyReq.setHeader('X-UserId', validate.user._id);
         },
         onError: (err, req, res) => {
             return res.status(500).send({

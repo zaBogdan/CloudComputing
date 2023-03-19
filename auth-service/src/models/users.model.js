@@ -21,12 +21,12 @@ const UserSchema = new Schema({
 });
 
 UserSchema.pre('save', async function(next) {
+    this.username = this.username.toLowerCase();
     const salt = await bcrypt.genSalt(12);
     const hash = await bcrypt.hash(this.password, salt);
     this.password = hash;
     next();
 });
-
 UserSchema.methods.checkPassword = async function(password) {
     return await bcrypt.compare(password, this.password);
 };
