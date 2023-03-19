@@ -84,7 +84,7 @@ export default async function serviceController(fastify: FastifyInstance) {
       const { runnerId } = (_request.params as { runnerId: string });
       const { name, tags } = (_request.body as UpdateJobSchema);
       
-      const response = await jobService.updateJob(runnerId, name, tags);
+      const response = await jobService.updateJob(runnerId, getCurrentUser(_request), name, tags);
       reply.code(201).send(handleResponseSuccess(
         `Job with runnerId ${runnerId} has been updated successfully`,
         response,
@@ -99,8 +99,7 @@ export default async function serviceController(fastify: FastifyInstance) {
     try {
       const { runnerId } = (_request.params as { runnerId: string });
       
-      await jobService.deleteJob(runnerId);
-      console.log('Hello world, DELETE JOB')
+      await jobService.deleteJob(runnerId, getCurrentUser(_request));
       return reply.code(200).send(handleResponseSuccess(
         `Job with runnerId ${runnerId} has been deleted successfully`,
       ));

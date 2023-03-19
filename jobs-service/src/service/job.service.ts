@@ -56,6 +56,7 @@ class JobService {
           metadata,
           lastUpdate: new Date()
         });
+        // here will be able to send the job to the RABBITMQ queue
         await job.save();
         return job;
     }
@@ -69,17 +70,16 @@ class JobService {
      * @param parameters (INTERNAL USE ONLY) updated the object with the given key-value pairs
      * @returns the new object
      */
-    async updateJob(runnerId: string, name?: string, tags?: string[], metadata?: any, parameters?: any) {
+    async updateJob(runnerId: string, owner: string, name?: string, tags?: string[], metadata?: any, parameters?: any) {
         console.log('UpdateJob', name, tags, parameters, metadata);
-        const filteredJobs = await this.findBy({ runnerId });
+        const filteredJobs = await this.findBy({ runnerId, triggeredBy: owner });
         const job = filteredJobs.pop();
         if (!job) {
             throw new CustomStatusCodeError('Job not found', 404);
         }
 
-        if (name) {
-            const jobsWithSameName = await this.findBy({ name: (name as string) });
-            console.log(name, jobsWithSameName)
+        if (name && job.name !== name) {
+            const jobsWithSameName = await this.findBy({ name: (name as string), triggeredBy: owner });
             if (jobsWithSameName.length > 0) {
                 throw new CustomStatusCodeError('Job with same name already exists', 409);
             }
@@ -104,8 +104,8 @@ class JobService {
         return null;
     }
 
-    async deleteJob(runnerId: string) {
-        const filteredJobs = await this.findBy({ runnerId });
+    async deleteJob(runnerId: string, triggeredBy: string) {
+        const filteredJobs = await this.findBy({ runnerId, triggeredBy  });
         const job = filteredJobs.pop();
         if (!job) {
             throw new CustomStatusCodeError('Job not found', 404);

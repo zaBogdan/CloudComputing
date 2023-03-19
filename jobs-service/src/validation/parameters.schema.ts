@@ -21,6 +21,8 @@ export const parametersSchema = {
       },
       copyFiles: {
         type: 'array',
+        minItems: 0,
+        maxItems: 15,
         items: [
           {
             type: 'object',
