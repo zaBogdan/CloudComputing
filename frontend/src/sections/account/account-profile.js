@@ -16,11 +16,10 @@ export const AccountProfile = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     avatar: '/assets/avatars/avatar-anika-visser.png',
-    city: 'Los Angeles',
-    country: 'USA',
-    jobTitle: 'Senior Developer',
-    name: 'Anika Visser',
-    timezone: 'GTM-7',
+    city: '',
+    country: '',
+    name: '',
+    timezone: '',
     initialized: false
   });
   useEffect(() => {

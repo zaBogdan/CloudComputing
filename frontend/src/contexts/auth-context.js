@@ -91,9 +91,10 @@ export const AuthProvider = (props) => {
           }
         });
         const user = {
-          id: data.data._id,
+          id: data.data.id,
           avatar: '/assets/avatars/avatar-anika-visser.png',
           name: `${data.data.firstName} ${data.data.lastName}`,
+          username: data.data.username,
           email: data.data.email
         };
   

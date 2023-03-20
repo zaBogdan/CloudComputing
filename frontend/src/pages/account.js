@@ -30,20 +30,7 @@ const Page = () => (
               container
               spacing={3}
             >
-              <Grid
-                xs={12}
-                md={6}
-                lg={4}
-              >
-                <AccountProfile />
-              </Grid>
-              <Grid
-                xs={12}
-                md={6}
-                lg={8}
-              >
                 <AccountProfileDetails />
-              </Grid>
             </Grid>
           </div>
         </Stack>
