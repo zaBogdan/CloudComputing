@@ -4,6 +4,8 @@ import {
 	CardContent,
 	Grid,
 	Button,
+	FormControlLabel,
+	Checkbox,
 	Divider,
 } from "@mui/material";
 import { toast } from 'react-toastify';
@@ -12,37 +14,30 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { Box } from "@mui/system";
 
-import { authenticatedPutRequest, authenticatedDeleteRequest } from "src/utils/requests";
+import { authenticatedDeleteRequest, authenticatedPutRequest } from "src/utils/requests";
 
-export const JobDetails = (props) => {
+export const InvitesDetails = (props) => {
 	const {
-		job
+		invite
 	} = props;
 	const formik = useFormik({
     initialValues: {
-      name: job.name,
-      tags: job.tags.join(','),
+      active: invite.active,
       submit: null
     },
     validationSchema: Yup.object({
-      name: Yup
-        .string()
-        .max(255)
-        .required('name is required'),
-			tags: Yup
-        .string()
-        .max(255)
-        .required('Tags is required')
+		active: Yup
+        .boolean()
+        .required('active is required')
     }),
     onSubmit: async (values, helpers) => {
       try {
-		const data = await authenticatedPutRequest(`/jobs/${job.runnerId}`, {
-			name: values.name,
-			tags: values.tags.split(','),
+		const data = await authenticatedPutRequest(`/user/invites/${invite.invite_code}`, {
+			active: values.active,
 		})
 		helpers.setStatus({ success: true });
 		helpers.setSubmitting(false);
-		toast.success('Job updated successfully')
+		toast.success('Invite updated successfully')
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -58,7 +53,7 @@ export const JobDetails = (props) => {
 				paddingLeft: '24px'
 			}}>
 				<Typography variant="h6">
-					Job Details
+					Invitation details
 				</Typography>
 				<Divider sx={{
 					margin: '16px',
@@ -67,34 +62,16 @@ export const JobDetails = (props) => {
 					noValidate
 					onSubmit={formik.handleSubmit}
 				>
-						<TextField
-							error={!!(formik.touched.name && formik.errors.name)}
-							fullWidth
-							helperText={formik.touched.name && formik.errors.name}
-							label="Name"
-							name="name"
-							onBlur={formik.handleBlur}
-							onChange={formik.handleChange}
-							type="text"
-							value={formik.values.name}
-							sx={{
-								marginBottom: '16px'
-							}}
-						/>
-						<TextField
-							error={!!(formik.touched.tags && formik.errors.tags)}
-							fullWidth
-							helperText={formik.touched.tags && formik.errors.tags}
-							label="Tags"
-							name="tags"
-							onBlur={formik.handleBlur}
-							onChange={formik.handleChange}
-							type="text"
-							value={formik.values.tags}
-							sx={{
-								marginBottom: '16px'
-							}}
-						/>
+				<FormControlLabel
+                    control={<Checkbox 
+						checked={formik.values.active}
+						/>}
+                    label="Active"
+					name="active"
+					value={formik.values.active}
+					onBlur={formik.handleBlur}
+					onChange={formik.handleChange}
+                  />
 				<Divider sx={{
 					margin: '16px',
 				}}/>
@@ -122,7 +99,7 @@ export const JobDetails = (props) => {
 						size="large"
 						variant="outline"
 						onClick={async () => {
-							await authenticatedDeleteRequest(`/jobs/${job.runnerId}`)
+							await authenticatedDeleteRequest(`/user/invites/${invite.invite_code}`)
 						}}
 						sx={{
 							marginLeft: '16px'
@@ -138,6 +115,6 @@ export const JobDetails = (props) => {
 	)
 };
 
-JobDetails.propTypes = {
-	job: PropTypes.object,
+InvitesDetails.propTypes = {
+	invite: PropTypes.object,
 }

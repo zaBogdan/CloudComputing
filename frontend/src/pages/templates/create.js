@@ -33,6 +33,7 @@ const Page = () => {
       name: '',
       tags: '',
       parameters: '',
+      substitute: '',
       submit: null,
     },
     validationSchema: Yup.object({
@@ -42,16 +43,17 @@ const Page = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        const data = await authenticatedPostRequest("/jobs", {
+        const data = await authenticatedPostRequest("/jobs/templates", {
           name: values.name,
           tags: values.tags.split(","),
           parameters: JSON.parse(values.parameters),
+          substitute: JSON.parse(values.substitute)
         });
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
         console.log(data);
-        toast.success(`Successfully created a new job!`);
-        router.push("/jobs");
+        toast.success(`Successfully created a new template!`);
+        router.push("/templates");
       } catch (err) {
         console.log('Error', err);
         helpers.setStatus({ success: false });
@@ -65,7 +67,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>PGround | Add new Job</title>
+        <title>PGround | Add new Template</title>
       </Head>
       <Box
         component="main"
@@ -78,7 +80,7 @@ const Page = () => {
           <Stack spacing={3}>
             <Stack direction="row" justifyContent="space-between" spacing={4}>
               <Stack spacing={1}>
-                <Typography variant="h4">Add a new job</Typography>
+                <Typography variant="h4">Add a new template</Typography>
               </Stack>
               <div>
                 <Button
@@ -88,7 +90,7 @@ const Page = () => {
                     </SvgIcon>
                   }
                   variant="contained"
-                  onClick={() => router.push("/jobs")}
+                  onClick={() => router.push("/templates")}
                 >
                   Back
                 </Button>
@@ -147,6 +149,20 @@ const Page = () => {
                             onChange={formik.handleChange}
                             value={formik.values.parameters}
                             placeholder="Add here parameters object in JSON format"
+                            sx={{
+                                marginTop: '10px',
+                                marginBottom: "16px",
+                            }}
+                        />
+                        <TextareaAutosize
+                            aria-label="minimum height"
+                            minRows={10}
+                            label="Substitute"
+                            name="substitute"
+                            onBlur={formik.handleBlur}
+                            onChange={formik.handleChange}
+                            value={formik.values.substitute}
+                            placeholder="Add here substitutes object in JSON format"
                             sx={{
                                 marginTop: '10px',
                                 marginBottom: "16px",

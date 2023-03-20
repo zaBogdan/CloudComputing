@@ -20,41 +20,29 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Scrollbar } from "src/components/scrollbar";
-import { JobDetails } from "./job-details";
+import { TemplateDetails } from "./template-details";
 
 const Row = (props) => {
-  const {
-    job,
-    index
-  } = props;
-  const createdAt = format(
-    new Date(job.lastUpdate),
-    "dd/MM/yyyy HH:mm:ss"
-  );
+  const { template, index } = props;
+  const createdAt = format(new Date(template.createdAt), "dd/MM/yyyy HH:mm:ss");
   const [open, setOpen] = useState(false);
   return (
     <>
-      <TableRow hover key={`job-${job.id}-first-${index}`}>
+      <TableRow hover key={`${template._id}-first-${index}`}>
         <TableCell>
           <IconButton
             aria-label="expand row"
             size="small"
             onClick={() => setOpen(!open)}
           >
-            {open ? (
-              <KeyboardArrowUpIcon />
-            ) : (
-              <KeyboardArrowDownIcon />
-            )}
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
         <TableCell>
-          <Typography variant="subtitle2">
-            {job.name}
-          </Typography>
+          <Typography variant="subtitle2">{template.name}</Typography>
         </TableCell>
         <TableCell>
-          {job.tags.map((tag, idx) => (
+          {template.tags.map((tag, idx) => (
             <Chip
               key={`${tag}-${idx}`}
               label={tag}
@@ -63,24 +51,21 @@ const Row = (props) => {
             />
           ))}
         </TableCell>
-        <TableCell>{job.triggeredBy}</TableCell>
+        <TableCell>{template.owner}</TableCell>
         <TableCell>{createdAt}</TableCell>
       </TableRow>
-      <TableRow key={`job-${job.id}-second-${index}`}>
-        <TableCell
-          style={{ paddingBottom: 0, paddingTop: 0 }}
-          colSpan={6}
-        >
+      <TableRow key={`${template._id}-second-${index}`}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <JobDetails job={job} />
+            <TemplateDetails template={template} />
           </Collapse>
         </TableCell>
       </TableRow>
     </>
   );
-}
+};
 
-export const JobsTable = (props) => {
+export const TemplateTable = (props) => {
   const {
     count = 0,
     items = [],
@@ -105,7 +90,9 @@ export const JobsTable = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((job, index) => <Row key={job.id} job={job} index={index} />)}
+              {items.map((template, index) => (
+                <Row template={template} index={index} key={`template-${template._id}-{index}`}/>
+              ))}
             </TableBody>
           </Table>
         </Box>
@@ -123,7 +110,7 @@ export const JobsTable = (props) => {
   );
 };
 
-JobsTable.propTypes = {
+TemplateTable.propTypes = {
   count: PropTypes.number,
   items: PropTypes.array,
   onPageChange: PropTypes.func,

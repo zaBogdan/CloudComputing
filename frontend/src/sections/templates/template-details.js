@@ -12,16 +12,16 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { Box } from "@mui/system";
 
-import { authenticatedPutRequest, authenticatedDeleteRequest } from "src/utils/requests";
+import { authenticatedDeleteRequest, authenticatedPutRequest } from "src/utils/requests";
 
-export const JobDetails = (props) => {
+export const TemplateDetails = (props) => {
 	const {
-		job
+		template
 	} = props;
 	const formik = useFormik({
     initialValues: {
-      name: job.name,
-      tags: job.tags.join(','),
+      name: template.name,
+      tags: template.tags.join(','),
       submit: null
     },
     validationSchema: Yup.object({
@@ -36,13 +36,13 @@ export const JobDetails = (props) => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-		const data = await authenticatedPutRequest(`/jobs/${job.runnerId}`, {
+		const data = await authenticatedPutRequest(`/jobs/templates/${template._id}`, {
 			name: values.name,
 			tags: values.tags.split(','),
 		})
 		helpers.setStatus({ success: true });
 		helpers.setSubmitting(false);
-		toast.success('Job updated successfully')
+		toast.success('Template updated successfully')
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -58,7 +58,7 @@ export const JobDetails = (props) => {
 				paddingLeft: '24px'
 			}}>
 				<Typography variant="h6">
-					Job Details
+					template Details
 				</Typography>
 				<Divider sx={{
 					margin: '16px',
@@ -122,7 +122,7 @@ export const JobDetails = (props) => {
 						size="large"
 						variant="outline"
 						onClick={async () => {
-							await authenticatedDeleteRequest(`/jobs/${job.runnerId}`)
+							await authenticatedDeleteRequest(`/jobs/templates/${template._id}`)
 						}}
 						sx={{
 							marginLeft: '16px'
@@ -138,6 +138,6 @@ export const JobDetails = (props) => {
 	)
 };
 
-JobDetails.propTypes = {
-	job: PropTypes.object,
+TemplateDetails.propTypes = {
+	template: PropTypes.object,
 }

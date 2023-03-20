@@ -5,12 +5,11 @@ import Head from 'next/head';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { JobsTable } from 'src/sections/jobs/jobs-table';
-import { JobsSearch } from 'src/sections/jobs/jobs-search';
+import { TemplateTable } from 'src/sections/templates/template-table';
+import { TemplateSearch } from 'src/sections/templates/template-search';
 import { applyPagination } from 'src/utils/apply-pagination';
 
-const useJobs = (data, page, rowsPerPage) => {
-
+const useTemplates = (data, page, rowsPerPage) => {
   return useMemo(
     () => {
       return applyPagination(data, page, rowsPerPage);
@@ -23,8 +22,8 @@ const Page = () => {
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { data, error, isLoading } = useSWR('/jobs');
-  const jobs = useJobs(data?.data || [], page, rowsPerPage);
+  const { data, error, isLoading } = useSWR('/jobs/templates');
+  const templates = useTemplates(data?.data || [], page, rowsPerPage);
   console.log(data?.data)
   const handlePageChange = useCallback(
     (event, value) => {
@@ -46,7 +45,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          PGround | Jobs
+          PGround | Templates
         </title>
       </Head>
       <Box
@@ -65,7 +64,7 @@ const Page = () => {
             >
               <Stack spacing={1}>
                 <Typography variant="h4">
-                  Jobs
+                  Templates
                 </Typography>
               </Stack>
               <div>
@@ -76,21 +75,21 @@ const Page = () => {
                     </SvgIcon>
                   )}
                   variant="contained"
-                  onClick={() => router.push('/jobs/create')}
+                  onClick={() => router.push('/templates/create')}
                 >
                   Add
                 </Button>
               </div>
             </Stack>
-            <JobsSearch />
-                <JobsTable
-                  count={data?.data?.length || 0}
-                  items={jobs}
-                  onPageChange={handlePageChange}
-                  onRowsPerPageChange={handleRowsPerPageChange}
-                  page={page}
-                  rowsPerPage={rowsPerPage}
-                />
+            <TemplateSearch />
+            <TemplateTable
+              count={data?.data?.length || 0}
+              items={templates}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
+              page={page}
+              rowsPerPage={rowsPerPage}
+            />
           </Stack>
         </Container>
       </Box>

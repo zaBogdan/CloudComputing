@@ -296,6 +296,11 @@ export function createComponents(config) {
       defaultProps: {
         variant: 'filled'
       }
+    },
+    MuiTextareaAutosize: {
+      defaultProps: {
+        variant: 'filled'
+      }
     }
   };
 }

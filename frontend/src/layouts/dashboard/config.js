@@ -69,17 +69,8 @@ export const items = [
         )
       },
       {
-        title: 'Settings',
-        path: '/settings',
-        icon: (
-          <SvgIcon fontSize="small">
-            <CogIcon />
-          </SvgIcon>
-        )
-      },
-      {
         title: 'Invite Friends',
-        path: '/affiliate',
+        path: '/invites',
         icon: (
           <SvgIcon fontSize="small">
             <UserGroupIcon />

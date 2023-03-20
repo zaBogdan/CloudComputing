@@ -20,67 +20,59 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Scrollbar } from "src/components/scrollbar";
-import { JobDetails } from "./job-details";
+import { InvitesDetails } from "./invites-details";
 
 const Row = (props) => {
-  const {
-    job,
-    index
-  } = props;
-  const createdAt = format(
-    new Date(job.lastUpdate),
-    "dd/MM/yyyy HH:mm:ss"
-  );
+  const { invite, index } = props;
   const [open, setOpen] = useState(false);
   return (
     <>
-      <TableRow hover key={`job-${job.id}-first-${index}`}>
+      <TableRow hover key={`invites-${invite.invite_code}-first-${index}`}>
         <TableCell>
           <IconButton
             aria-label="expand row"
             size="small"
             onClick={() => setOpen(!open)}
           >
-            {open ? (
-              <KeyboardArrowUpIcon />
-            ) : (
-              <KeyboardArrowDownIcon />
-            )}
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
         <TableCell>
-          <Typography variant="subtitle2">
-            {job.name}
-          </Typography>
+          <Typography variant="subtitle2">{invite.email}</Typography>
         </TableCell>
         <TableCell>
-          {job.tags.map((tag, idx) => (
+          {
+              Math.floor((new Date(invite.expire_date).getTime() - (new Date()).getTime()) / 3600000)
+          }
+          {' '} hours
+        </TableCell>
+        <TableCell>{invite.active ? (
             <Chip
-              key={`${tag}-${idx}`}
-              label={tag}
-              color="primary"
+              label="Active"
+              color="success"
               style={{ marginLeft: 1 }}
             />
-          ))}
-        </TableCell>
-        <TableCell>{job.triggeredBy}</TableCell>
-        <TableCell>{createdAt}</TableCell>
+        ) : (
+            <Chip
+              label="Inactive"
+              color="error"
+              style={{ marginLeft: 1 }}
+            />
+        )}</TableCell>
+        <TableCell>{invite.invite_code}</TableCell>
       </TableRow>
-      <TableRow key={`job-${job.id}-second-${index}`}>
-        <TableCell
-          style={{ paddingBottom: 0, paddingTop: 0 }}
-          colSpan={6}
-        >
+      <TableRow key={`${invite._id}-second-${index}`}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <JobDetails job={job} />
+            <InvitesDetails invite={invite} />
           </Collapse>
         </TableCell>
       </TableRow>
     </>
   );
-}
+};
 
-export const JobsTable = (props) => {
+export const InvitesTable = (props) => {
   const {
     count = 0,
     items = [],
@@ -98,14 +90,16 @@ export const JobsTable = (props) => {
             <TableHead>
               <TableRow>
                 <TableCell>#</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Tags</TableCell>
-                <TableCell>Triggered By</TableCell>
-                <TableCell>Latest Update</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Expires in</TableCell>
+                <TableCell>Active</TableCell>
+                <TableCell>Code</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((job, index) => <Row key={job.id} job={job} index={index} />)}
+              {items.map((invite, index) => (
+                <Row invite={invite} index={index} key={`invites-${invite.invite_code}-{index}`}/>
+              ))}
             </TableBody>
           </Table>
         </Box>
@@ -123,7 +117,7 @@ export const JobsTable = (props) => {
   );
 };
 
-JobsTable.propTypes = {
+InvitesTable.propTypes = {
   count: PropTypes.number,
   items: PropTypes.array,
   onPageChange: PropTypes.func,

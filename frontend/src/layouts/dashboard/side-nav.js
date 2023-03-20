@@ -71,7 +71,7 @@ export const SideNav = (props) => {
               m: 0
             }}
           >
-            <SideNavItem
+            {/* <SideNavItem
               active={"/" ? (pathname === "/") : false}
               icon={(
                 <SvgIcon fontSize="small">
@@ -81,7 +81,7 @@ export const SideNav = (props) => {
               key="Overview"
               path={"/"}
               title="Overview"
-            />
+            /> */}
             {items.map((category) => {
               return (
                 <Box
